@@ -2,7 +2,6 @@ package com.lexem.hexcodeevoke.npc.filters;
 
 import com.hypixel.hytale.component.Ref;
 import com.hypixel.hytale.component.Store;
-import com.hypixel.hytale.logger.HytaleLogger;
 import com.hypixel.hytale.server.core.asset.type.blocktype.config.BlockType;
 import com.hypixel.hytale.server.core.asset.type.blocktype.config.HarvestingDropType;
 import com.hypixel.hytale.server.core.asset.type.blocktype.config.farming.FarmingData;
