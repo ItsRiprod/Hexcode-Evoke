@@ -142,11 +142,11 @@ public class EvokerComponent implements Component<EntityStore> {
         selectedHexCreatures = newArray;
     }
 
-    //TODO: Improve deleteUnusedHexCreatureUUID
-//    public void deleteUnusedHexCreatureUUID(World world) {
+    //TODO: Fix this
+//    public void deleteUnusedHexCreatureUUID(Store<EntityStore> store) {
 //        for (String uuidString : hexCreatureUUIDs) {
 //            UUID uuid = UUID.fromString(uuidString);
-//            Ref<EntityStore> npcESRef = world.getEntityStore().getRefFromUUID(uuid);
+//            Ref<EntityStore> npcESRef = store.getExternalData().getRefFromUUID(uuid);
 //            if (npcESRef == null) {
 //                removeHexCreatureUUID(uuidString);
 //            }

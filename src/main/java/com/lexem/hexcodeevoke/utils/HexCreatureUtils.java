@@ -58,7 +58,7 @@ public class HexCreatureUtils {
         Store<EntityStore> store = refESPlayer.getStore();
         EvokerComponent evoker = store.getComponent(refESPlayer, EvokerComponent.getComponentType());
         if (evoker == null) { return false; }
-//        evoker.deleteUnusedHexCreatureUUID(world);
+//        evoker.deleteUnusedHexCreatureUUID(store);
 
         int roleIndex = NPCPlugin.get().getIndex(hexItem.entityId);
 
