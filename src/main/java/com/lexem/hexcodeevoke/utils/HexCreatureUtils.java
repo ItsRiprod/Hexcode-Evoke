@@ -14,7 +14,6 @@ import com.hypixel.hytale.server.core.universe.world.chunk.section.BlockSection;
 import com.hypixel.hytale.server.core.universe.world.storage.ChunkStore;
 import com.hypixel.hytale.server.core.universe.world.storage.EntityStore;
 import com.hypixel.hytale.server.core.util.FillerBlockUtil;
-import com.hypixel.hytale.server.core.util.NotificationUtil;
 import com.hypixel.hytale.server.npc.NPCPlugin;
 import com.hypixel.hytale.server.npc.entities.NPCEntity;
 import com.lexem.hexcodeevoke.components.EvokerComponent;
@@ -59,7 +58,7 @@ public class HexCreatureUtils {
         Store<EntityStore> store = refESPlayer.getStore();
         EvokerComponent evoker = store.getComponent(refESPlayer, EvokerComponent.getComponentType());
         if (evoker == null) { return false; }
-        evoker.deleteUnusedHexCreatureUUID(world);
+//        evoker.deleteUnusedHexCreatureUUID(world);
 
         int roleIndex = NPCPlugin.get().getIndex(hexItem.entityId);
 

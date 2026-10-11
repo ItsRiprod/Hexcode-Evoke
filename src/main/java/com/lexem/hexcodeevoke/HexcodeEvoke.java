@@ -27,7 +27,8 @@ import com.lexem.hexcodeevoke.npc.bodymotions.builders.BuilderTeleportHexCreatur
 import com.lexem.hexcodeevoke.npc.filters.builders.*;
 import com.lexem.hexcodeevoke.npc.sensors.builders.*;
 import com.lexem.hexcodeevoke.builtin.HexcodeBuiltin;
-import com.lexem.hexcodeevoke.systems.NPCJoinSystem;
+import com.lexem.hexcodeevoke.systems.NPCDeathSystem;
+import com.lexem.hexcodeevoke.systems.NPCSpawnSystem;
 import com.lexem.hexcodeevoke.systems.PlayerJoinSystem;
 import org.checkerframework.checker.nullness.compatqual.NonNullDecl;
 import com.riprod.patchly.PatchManager;
@@ -164,7 +165,8 @@ public class HexcodeEvoke extends JavaPlugin {
         HexCreatureMinionComponent.setComponentType(hexCreatureMinionType);
 
         registery.registerSystem(new PlayerJoinSystem());
-        registery.registerSystem(new NPCJoinSystem());
+        registery.registerSystem(new NPCSpawnSystem());
+        registery.registerSystem(new NPCDeathSystem());
     }
 
     private void registerEvents() {
