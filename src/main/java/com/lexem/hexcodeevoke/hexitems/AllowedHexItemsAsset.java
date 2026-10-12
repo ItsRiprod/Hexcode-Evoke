@@ -13,7 +13,6 @@ import com.hypixel.hytale.codec.builder.BuilderCodec;
 import com.hypixel.hytale.codec.codecs.array.ArrayCodec;
 import com.hypixel.hytale.codec.validation.ValidatorCache;
 import com.hypixel.hytale.codec.validation.Validators;
-import com.hypixel.hytale.logger.HytaleLogger;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
@@ -24,7 +23,6 @@ public class AllowedHexItemsAsset implements JsonAssetWithMap<String, DefaultAss
     public static final AssetBuilderCodec<String, AllowedHexItemsAsset> CODEC;
     private static AssetStore<String, AllowedHexItemsAsset, DefaultAssetMap<String, AllowedHexItemsAsset>> ASSET_STORE;
     public static final ValidatorCache<String> VALIDATOR_CACHE;
-    private static final HytaleLogger LOGGER = HytaleLogger.forEnclosingClass();
 
     protected AssetExtraInfo.Data data;
     protected String id;
@@ -45,6 +43,8 @@ public class AllowedHexItemsAsset implements JsonAssetWithMap<String, DefaultAss
                                         .append(new KeyedCodec<>("EntityId", Codec.STRING), (item, s) -> item.entityId = s, item -> item.entityId)
                                         .addValidator(Validators.nonNull())
                                         .add()
+                                        .append(new KeyedCodec<>("HasLeftHandSlot", Codec.BOOLEAN), (item, s) -> item.hasLeftHandSlot = s, item -> item.hasLeftHandSlot)
+                                        .add()
                                         .append(new KeyedCodec<>("HasRightHandSlot", Codec.BOOLEAN), (item, s) -> item.hasRightHandSlot = s, item -> item.hasRightHandSlot)
                                         .add()
                                         .append(new KeyedCodec<>("HasArmorHeadSlot", Codec.BOOLEAN), (item, s) -> item.hasArmorHeadSlot = s, item -> item.hasArmorHeadSlot)
@@ -54,6 +54,10 @@ public class AllowedHexItemsAsset implements JsonAssetWithMap<String, DefaultAss
                                         .append(new KeyedCodec<>("HasArmorHandsSlot", Codec.BOOLEAN), (item, s) -> item.hasArmorHandsSlot = s, item -> item.hasArmorHandsSlot)
                                         .add()
                                         .append(new KeyedCodec<>("HasArmorLegSlot", Codec.BOOLEAN), (item, s) -> item.hasArmorLegSlot = s, item -> item.hasArmorLegSlot)
+                                        .add()
+                                        .append(new KeyedCodec<>("HasHotbarSlot", Codec.BOOLEAN), (item, s) -> item.hasHotbarSlot = s, item -> item.hasHotbarSlot)
+                                        .add()
+                                        .append(new KeyedCodec<>("EssenceCost", Codec.INTEGER), (item, s) -> item.essenceCost = s, item -> item.essenceCost)
                                         .add()
                                         .build(),
                                 AllowedHexItemsAsset.HexItem[]::new
@@ -69,11 +73,14 @@ public class AllowedHexItemsAsset implements JsonAssetWithMap<String, DefaultAss
     public static class HexItem {
         public String blockId = "";
         public String entityId = "";
-        public boolean hasRightHandSlot = true;
-        public boolean hasArmorHeadSlot = true;
-        public boolean hasArmorChestSlot = true;
-        public boolean hasArmorHandsSlot = true;
-        public boolean hasArmorLegSlot = true;
+        public boolean hasLeftHandSlot = false;
+        public boolean hasRightHandSlot = false;
+        public boolean hasArmorHeadSlot = false;
+        public boolean hasArmorChestSlot = false;
+        public boolean hasArmorHandsSlot = false;
+        public boolean hasArmorLegSlot = false;
+        public boolean hasHotbarSlot = false;
+        public int essenceCost = 0;
 
         public HexItem() {}
     }
@@ -133,6 +140,11 @@ public class AllowedHexItemsAsset implements JsonAssetWithMap<String, DefaultAss
         return item != null ? item.blockId : "";
     }
 
+    public static boolean hasLeftHandSlotByEntityId(String entityId) {
+        HexItem item = getByEntityId(entityId);
+        return item != null && item.hasLeftHandSlot;
+    }
+
     public static boolean hasRightHandSlotByEntityId(String entityId) {
         HexItem item = getByEntityId(entityId);
         return item != null && item.hasRightHandSlot;
@@ -156,6 +168,11 @@ public class AllowedHexItemsAsset implements JsonAssetWithMap<String, DefaultAss
     public static boolean hasArmorLegSlotByEntityId(String entityId) {
         HexItem item = getByEntityId(entityId);
         return item != null && item.hasArmorLegSlot;
+    }
+
+    public static boolean hasHotbarSlotByEntityId(String entityId) {
+        HexItem item = getByEntityId(entityId);
+        return item != null && item.hasHotbarSlot;
     }
 
     public static boolean isHexCreature(@Nonnull String entityId) {

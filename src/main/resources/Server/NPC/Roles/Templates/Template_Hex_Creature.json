@@ -126,8 +126,9 @@
         {
           "Continue": true,
           "Sensor": {
-            "Type": "EvokeReadPosition",
-            "Range": 30
+            "Type": "Evoke:ReadPosition",
+            "Range": 30,
+            "MinRange": 1
           },
           "BodyMotion": {
             "Type": "Seek",
@@ -138,8 +139,9 @@
         },
         {
           "Sensor": {
-            "Type": "EvokeReadPosition",
-            "Range": 2
+            "Type": "Evoke:ReadPosition",
+            "Range": 2,
+            "MinRange": 1
           },
           "Actions": [
             {
@@ -197,7 +199,7 @@
             "LockOnTarget": true,
             "Filters": [
               {
-                "Type": "IsEvoker"
+                "Type": "Evoke:IsEvoker"
               }
             ]
           },
@@ -221,7 +223,7 @@
             "Type": "Target",
             "Filters": [
               {
-                "Type": "IsEvoker"
+                "Type": "Evoke:IsEvoker"
               }
             ]
           },
@@ -268,11 +270,11 @@
                 "Type": "Self",
                 "Filters": [
                   {
-                    "Type": "EvokeIsInventoryFull",
+                    "Type": "Evoke:IsInventoryFull",
                     "Inventories": ["Hotbar", "Storage"]
                   },
                   {
-                    "Type": "EvokeFilterHasChestNearby",
+                    "Type": "Evoke:HasChestNearby",
                     "HorizontalRange": 10,
                     "VerticalRange": 3
                   }
@@ -295,7 +297,7 @@
                     "Items": [ "Tool_Sickle*" ]
                   },
                   {
-                    "Type": "EvokeFilterHasHarvestableCrop",
+                    "Type": "Evoke:HasHarvestableCrop",
                     "HorizontalRange": 10,
                     "VerticalRange": 3
                   }
@@ -318,7 +320,7 @@
                     "Items": [ "Tool_Watering_Can" ]
                   },
                   {
-                    "Type": "EvokeFilterHasWettableSoil",
+                    "Type": "Evoke:HasWettableSoil",
                     "HorizontalRange": 10,
                     "VerticalRange": 3
                   }
@@ -332,7 +334,7 @@
               ]
             },
             {
-              "$Comment": "Checks if you are holding a sickle",
+              "$Comment": "Returns to standby mode",
               "Sensor": {
                 "Type": "Any"
               },
@@ -433,7 +435,7 @@
           {
             "Actions": [
               {
-                "Type": "OpenHCProfile"
+                "Type": "Evoke:OpenHCProfile"
               }
             ]
           }

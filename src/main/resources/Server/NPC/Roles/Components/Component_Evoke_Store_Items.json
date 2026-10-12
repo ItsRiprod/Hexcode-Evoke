@@ -2,7 +2,15 @@
   "$Comment": "Store items",
   "Class": "Instruction",
   "Parameters": {
-    "_ImportStates": ["Main"]
+    "_ImportStates": ["Main"],
+    "HorizontalRange": {
+      "Value": 10,
+      "Description": "Max horizontal range to search"
+    },
+    "VerticalRange": {
+      "Value": 3,
+      "Description": "Max vertical range to search"
+    }
   },
   "Content":  {
     "Instructions": [
@@ -10,9 +18,9 @@
         "$Comment": "Search for a chest that has available slots",
         "Continue": true,
         "Sensor":  {
-          "Type": "EvokeChestFinder",
-          "HorizontalRange": 10,
-          "VerticalRange": 3,
+          "Type": "Evoke:ChestFinder",
+          "HorizontalRange": { "Compute": "HorizontalRange" },
+          "VerticalRange": { "Compute": "VerticalRange" },
           "CheckCanStore": true
         },
         "BodyMotion": {
@@ -26,16 +34,25 @@
         "$Comment": "Store the items",
         "Continue": true,
         "Sensor":  {
-          "Type": "EvokeChestFinder",
+          "Type": "Evoke:ChestFinder",
           "HorizontalRange": 2,
           "VerticalRange": 3,
           "CheckCanStore": true
         },
+        "ActionsBlocking": true,
         "Actions": [
           {
             "Type": "PlayAnimation",
             "Slot": "Status",
             "Animation": "Interact"
+          },
+          {
+            "Type": "PlaySound",
+            "SoundEventId": "SFX_Chest_Wooden_Open",
+            "Once": true
+          },
+          {
+            "Type": "Evoke:OpenChestAnimation"
           },
           {
             "Type": "Timeout",
@@ -44,7 +61,15 @@
               "Type": "Sequence",
               "Actions": [
                 {
-                  "Type": "EvokeStoreItems"
+                  "Type": "PlaySound",
+                  "SoundEventId": "SFX_Chest_Wooden_Close"
+                },
+                {
+                  "Type": "Evoke:OpenChestAnimation",
+                  "Reverse": true
+                },
+                {
+                  "Type": "Evoke:StoreItems"
                 },
                 {
                   "Type": "PlayAnimation",
@@ -56,6 +81,29 @@
                 }
               ]
             }
+          }
+        ]
+      },
+      {
+        "$Comment": "Search for a chest that has available slots",
+        "Continue": true,
+        "Sensor": {
+          "Type": "Not",
+          "Sensor":  {
+            "Type": "Evoke:ChestFinder",
+            "HorizontalRange": { "Compute": "HorizontalRange" },
+            "VerticalRange": { "Compute": "VerticalRange" },
+            "CheckCanStore": true
+          }
+        },
+        "Actions": [
+          {
+            "Type": "PlayAnimation",
+            "Slot": "Status"
+          },
+          {
+            "Type": "ParentState",
+            "State": "Main"
           }
         ]
       }

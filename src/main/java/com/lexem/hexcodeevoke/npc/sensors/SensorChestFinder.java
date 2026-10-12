@@ -2,7 +2,6 @@ package com.lexem.hexcodeevoke.npc.sensors;
 
 import com.hypixel.hytale.component.Ref;
 import com.hypixel.hytale.component.Store;
-import com.hypixel.hytale.logger.HytaleLogger;
 import com.hypixel.hytale.math.util.ChunkUtil;
 import com.hypixel.hytale.server.core.inventory.container.SimpleItemContainer;
 import com.hypixel.hytale.server.core.modules.block.BlockModule;
@@ -94,7 +93,7 @@ public class SensorChestFinder extends SensorBase {
         }
 
         SimpleItemContainer chestContainer = itemContainerBlock.getItemContainer();
-        return InventoryUtils.canAddAnyItemToContainerNPC(chestContainer, npcRef, store);
+        return InventoryUtils.canAddAnyItemToContainerNPC(chestContainer, npcRef, store, true);
     };
 
     public InfoProvider getSensorInfo() { return this.positionProvider; }

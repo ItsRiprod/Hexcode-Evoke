@@ -5,6 +5,7 @@ import com.hypixel.hytale.codec.KeyedCodec;
 import com.hypixel.hytale.codec.builder.BuilderCodec;
 import com.hypixel.hytale.component.Ref;
 import com.hypixel.hytale.component.Store;
+import com.hypixel.hytale.logger.HytaleLogger;
 import com.hypixel.hytale.protocol.packets.interface_.CustomPageLifetime;
 import com.hypixel.hytale.protocol.packets.interface_.CustomUIEventBindingType;
 import com.hypixel.hytale.protocol.packets.interface_.Page;
@@ -16,7 +17,6 @@ import com.hypixel.hytale.server.core.ui.builder.UIEventBuilder;
 import com.hypixel.hytale.server.core.universe.PlayerRef;
 import com.hypixel.hytale.server.core.universe.world.storage.EntityStore;
 import com.hypixel.hytale.server.npc.entities.NPCEntity;
-import com.hypixel.hytale.server.npc.instructions.ExecutionSupport;
 import com.hypixel.hytale.server.npc.role.Role;
 import com.hypixel.hytale.server.npc.role.support.DisplayNameSupport;
 import com.lexem.hexcodeevoke.components.EvokerComponent;
@@ -34,6 +34,7 @@ public class EvokeBookPage extends InteractiveCustomUIPage<EvokeBookPage.EvokeBo
     private final String pageNameFile;
     private final String cardNameFile;
     private Map<String, String> nameHCMap = new HashMap<>();
+    private static final HytaleLogger LOGGER = HytaleLogger.forEnclosingClass();
 
     public static class EvokeBookEventData {
         public String hexCreatureName;
@@ -252,11 +253,11 @@ public class EvokeBookPage extends InteractiveCustomUIPage<EvokeBookPage.EvokeBo
         int index = 0;
 
         for (String uuid : hexCreaturesUUIDs) {
-            Ref<EntityStore> refESNPC = store.getExternalData().getRefFromUUID(UUID.fromString(uuid));
-            if (refESNPC == null) {continue;}
+            Ref<EntityStore> npcRef = store.getExternalData().getRefFromUUID(UUID.fromString(uuid));
+            if (npcRef == null) continue;
 
-            HexCreatureComponent hexCreature = store.getComponent(refESNPC, HexCreatureComponent.getComponentType());
-            if (hexCreature == null) {continue;}
+            HexCreatureComponent hexCreature = store.getComponent(npcRef, HexCreatureComponent.getComponentType());
+            if (hexCreature == null) continue;
 
             String blockId = hexCreature.getBlockName();
             if (AllowedHexItemsAsset.getByBlockId(blockId) == null) {
@@ -266,7 +267,7 @@ public class EvokeBookPage extends InteractiveCustomUIPage<EvokeBookPage.EvokeBo
             String name = hexCreature.getName();
             boolean showName = hexCreature.getShowName();
 
-            listHexCreatures.add(new HexCreatureRecord(index, name, blockId, refESNPC, uuid, showName));
+            listHexCreatures.add(new HexCreatureRecord(index, name, blockId, npcRef, uuid, showName));
 
             index++;
         }

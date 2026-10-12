@@ -23,6 +23,10 @@
       "Value": "Empty",
       "Description": "Drop Items"
     },
+    "MaxBeaconDistance": {
+      "Value": 100,
+      "Description": "The maximum distance the wand reaches"
+    },
     "NameTranslationKey": {
       "Value": "server.npcRoles.Template.name",
       "Description": "Translation key for NPC name display"
@@ -57,7 +61,7 @@
       "MaxHover": 1,
       "HoverFreq": 10,
       "MaxClimbHeight": 3,
-      "MaxDropHeight": 30
+      "MaxDropHeight": 3
     }
   ],
   "MaxHealth": 100,
@@ -101,7 +105,12 @@
             {
               "Sensor": {
                 "Type": "Player",
-                "Range": 15
+                "Range": 15,
+                "Filters": [
+                  {
+                    "Type": "Evoke:IsEvoker"
+                  }
+                ]
               },
               "Actions": [
                 {
@@ -115,42 +124,37 @@
       ]
     },
     {
-      "$Comment": "Change the state",
+      "$Comment": "Beacon wand command",
       "Continue": true,
+      "Sensor": {
+        "Type": "Any"
+      },
       "Instructions": [
         {
-          "Continue": true,
+          "$Comment": "Store target position",
           "Sensor": {
-            "Type": "FlockLeader"
+            "Type": "Beacon",
+            "Message": "EvokeTargetPosition",
+            "Range": { "Compute": "MaxBeaconDistance" }
           },
-          "Instructions": [
+          "Actions": [
             {
-              "$Comment": "Store target position",
-              "Sensor": {
-                "Type": "Beacon",
-                "Message": "EvokeTargetPosition",
-                "Range": 90
-              },
-              "Actions": [
-                {
-                  "Type": "State",
-                  "State": "SeekPosition"
-                }
-              ]
-            },
+              "Type": "State",
+              "State": "SeekPosition"
+            }
+          ]
+        },
+        {
+          "$Comment": "Follow the leader",
+          "Sensor": {
+            "Type": "Beacon",
+            "Message": "EvokeFollowLeader",
+            "Range": { "Compute": "MaxBeaconDistance" }
+          },
+          "Actions": [
             {
-              "$Comment": "Follow the leader",
-              "Sensor": {
-                "Type": "Beacon",
-                "Message": "EvokeFollowLeader",
-                "Range": 100
-              },
-              "Actions": [
-                {
-                  "Type": "State",
-                  "State": "Following"
-                }
-              ]
+              "Type": "State",
+              "State": "Following"
             }
           ]
         }
@@ -165,8 +169,9 @@
       "Instructions": [
         {
           "Sensor": {
-            "Type": "EvokeReadPosition",
-            "Range": 30
+            "Type": "Evoke:ReadPosition",
+            "Range": 30,
+            "MinRange": 1
           },
           "BodyMotion": {
             "Type": "Seek",
@@ -210,10 +215,10 @@
               "Sensor": {
                 "Type": "Player",
                 "Range": 5,
-                "ExcludeOwnType": true,
+                "LockOnTarget": true,
                 "Filters": [
                   {
-                    "Type": "IsEvoker"
+                    "Type": "Evoke:IsEvoker"
                   }
                 ]
               },
@@ -235,11 +240,10 @@
               "Sensor": {
                 "Type": "Player",
                 "Range": 15,
-                "ExcludeOwnType": true,
                 "LockOnTarget": true,
                 "Filters": [
                   {
-                    "Type": "IsEvoker"
+                    "Type": "Evoke:IsEvoker"
                   }
                 ]
               },
@@ -251,17 +255,36 @@
               }
             },
             {
+              "$Comment": "Prevents the NPC from losing sight of the player",
+              "Continue": true,
+              "Sensor": {
+                "Type": "Player",
+                "Range": { "Compute": "MaxBeaconDistance" },
+                "LockOnTarget": true,
+                "Filters": [
+                  {
+                    "Type": "Evoke:IsEvoker"
+                  }
+                ]
+              },
+              "Actions": [
+                {
+                  "Type": "Nothing"
+                }
+              ]
+            },
+            {
               "$Comment": "Teleports to the leader if more than 15 blocks away",
               "Sensor": {
                 "Type": "Target",
                 "Filters": [
                   {
-                    "Type": "IsEvoker"
+                    "Type": "Evoke:IsEvoker"
                   }
                 ]
               },
               "BodyMotion": {
-                "Type": "TeleportHexCreature",
+                "Type": "Evoke:Teleport",
                 "MinYOffset": 1.0,
                 "OffsetRange": [2, 3],
                 "OffsetSector": 2,
@@ -287,8 +310,28 @@
     }
   ],
   "InteractionInstruction": {
-    "$Comment": "Opens the Hex Creature profile when interacted with",
+    "$Comment": "Despawn the Hex Creature",
     "Instructions": [
+      {
+        "Sensor": {
+          "Type": "Not",
+          "Sensor": {
+            "Type": "Target",
+            "Filters": [
+              {
+                "Type": "Evoke:IsTargetCrouch"
+              }
+            ]
+          }
+        },
+        "Actions": [
+          {
+            "Type": "SetInteractable",
+            "Interactable": false,
+            "Hint": " "
+          }
+        ]
+      },
       {
         "Continue": true,
         "Sensor": {
@@ -297,13 +340,30 @@
         "Actions": [
           {
             "Type": "SetInteractable",
-            "Interactable": true
+            "Interactable": true,
+            "Hint": "evoke.interactionHints.despawn"
           }
         ]
       },
       {
         "Sensor": {
-          "Type": "HasInteracted"
+          "Type": "And",
+          "Sensors": [
+            {
+              "Type": "HasInteracted"
+            },
+            {
+              "Type": "Target",
+              "Filters": [
+                {
+                  "Type": "Evoke:IsTargetCrouch"
+                },
+                {
+                  "Type": "Evoke:IsEvoker"
+                }
+              ]
+            }
+          ]
         },
         "Instructions": [
           {
